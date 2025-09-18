@@ -1,0 +1,543 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Maestría en IA y Salud</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f4f8;
+            color: #1a202c;
+            line-height: 1.6;
+            transition: all 0.3s ease;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+        .module-button, .objective-button {
+            transition: all 0.3s ease;
+            transform: scale(1);
+            position: relative;
+        }
+        .module-button:hover, .objective-button:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+        }
+        .info-panel {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            display: none;
+            overflow-y: auto;
+            padding: 2rem;
+        }
+        .info-panel.visible {
+            display: block;
+        }
+        .close-button {
+            position: absolute;
+            top: 2rem;
+            right: 2rem;
+            background: #ef4444;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 9999px;
+            cursor: pointer;
+            z-index: 1001;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+        }
+        .close-button:hover {
+            background-color: #dc2626;
+        }
+        .menu-button {
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 1002;
+            cursor: pointer;
+            background-color: #005c8c;
+        }
+        .menu-panel {
+            position: fixed;
+            top: 0;
+            left: -300px;
+            width: 280px;
+            height: 100%;
+            background-color: #004566;
+            color: white;
+            z-index: 1001;
+            transition: all 0.3s ease-in-out;
+            padding: 2rem 1rem;
+            box-shadow: 5px 0 10px rgba(0, 0, 0, 0.2);
+            overflow-y: auto;
+        }
+        .menu-panel.open {
+            left: 0;
+        }
+        .btn-aprende {
+            background-color: #005c8c;
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 9999px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        .btn-aprende:hover {
+            background-color: #004566;
+        }
+    </style>
+</head>
+<body class="bg-gray-100">
+
+    <!-- Menu Button -->
+    <button class="menu-button p-3 rounded-full text-white shadow-lg focus:outline-none focus:ring focus:ring-blue-300" onclick="toggleMenu()">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
+        </svg>
+    </button>
+
+    <!-- Menu Panel -->
+    <div id="menu-panel" class="menu-panel">
+        <h3 class="text-2xl font-bold mb-4">Menú del Programa</h3>
+        <ul class="space-y-2">
+            <li><a href="#programa" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('programa')">Resumen del Programa</a></li>
+            <li><a href="#fundamentos" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('fundamentos')">Fundamentación Avanzada</a></li>
+            <li><a href="#objetivos" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('objetivos')">Objetivos de la Maestría</a></li>
+            <li><a href="#modulo1" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo1')">Módulo 1</a></li>
+            <li><a href="#modulo2" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo2')">Módulo 2</a></li>
+            <li><a href="#modulo3" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo3')">Módulo 3</a></li>
+            <li><a href="#modulo4" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo4')">Módulo 4</a></li>
+            <li><a href="#modulo5" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo5')">Módulo 5</a></li>
+            <li><a href="#modulo6" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('modulo6')">Módulo 6</a></li>
+            <li><a href="#carga-horaria" class="block py-2 px-3 hover:bg-gray-700 rounded-lg" onclick="showSection('carga-horaria')">Carga Horaria</a></li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="container bg-white rounded-3xl shadow-xl mt-10 mb-10">
+        
+        <!-- Hero Section -->
+        <section class="flex flex-col lg:flex-row items-center justify-between p-8 bg-gradient-to-r from-blue-50 to-white rounded-t-3xl border-b-2 border-gray-200">
+            <div class="lg:w-1/2 text-center lg:text-left mb-8 lg:mb-0">
+                <h1 class="text-4xl lg:text-5xl font-bold text-gray-800">Maestría en Inteligencia Artificial y Transformación Digital en Salud</h1>
+                <p class="mt-4 text-lg lg:text-xl text-gray-600">Formando a la próxima generación de líderes clínicos en la era digital.</p>
+                <button class="mt-8 btn-aprende" onclick="showFullContent('programa')">
+                    Explorar el Programa
+                </button>
+            </div>
+            <div class="lg:w-1/2 flex justify-center">
+                             </div>
+        </section>
+
+        <!-- Program Overview Cards -->
+        <section class="py-8 border-b-2 border-gray-200">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 text-center px-4">
+                <div class="p-6 bg-white rounded-2xl shadow-md border-t-4 border-blue-500">
+                    <div class="text-4xl text-blue-600 mb-2">🎓</div>
+                    <h3 class="text-2xl font-semibold">Destinatarios</h3>
+                    <p class="mt-2 text-gray-600">Médicos, profesionales de la salud y estudiantes de 5º y 6º año de Medicina.</p>
+                </div>
+                <div class="p-6 bg-white rounded-2xl shadow-md border-t-4 border-green-500">
+                    <div class="text-4xl text-green-600 mb-2">⏰</div>
+                    <h3 class="text-2xl font-semibold">Carga Horaria</h3>
+                    <p class="mt-2 text-gray-600">140 horas totales (100h teóricas + 40h prácticas).</p>
+                </div>
+                <div class="p-6 bg-white rounded-2xl shadow-md border-t-4 border-yellow-500">
+                    <div class="text-4xl text-yellow-600 mb-2">🔄</div>
+                    <h3 class="text-2xl font-semibold">Modalidad</h3>
+                    <p class="mt-2 text-gray-600">Híbrida: presencial/virtual, sincrónica o asincrónica.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Objectives Section -->
+        <section class="py-8 px-4">
+            <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Objetivos Clave</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <button class="objective-button flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm hover:bg-gray-100 transition-all border-b-4 border-red-500" onclick="showFullContent('objetivos')">
+                    <div class="text-5xl text-red-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5l-5-5 1.41-1.41L11 14.67l7.09-7.09L19.5 8.91z"/></svg>
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-gray-700">Integrar la IA</h3>
+                    <p class="mt-2 text-gray-600 text-sm">Evaluar su calidad, seguridad y valor agregado de forma estratégica.</p>
+                </button>
+                <button class="objective-button flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm hover:bg-gray-100 transition-all border-b-4 border-purple-500" onclick="showFullContent('objetivos')">
+                    <div class="text-5xl text-purple-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5l-5-5 1.41-1.41L11 14.67l7.09-7.09L19.5 8.91z"/></svg>
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-gray-700">Dominar la Gobernanza</h3>
+                    <p class="mt-2 text-gray-600 text-sm">Gestionar la privacidad, equidad y seguridad de los datos clínicos.</p>
+                </button>
+                <button class="objective-button flex flex-col items-center text-center p-4 bg-white rounded-2xl shadow-sm hover:bg-gray-100 transition-all border-b-4 border-indigo-500" onclick="showFullContent('objetivos')">
+                    <div class="text-5xl text-indigo-500">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15.5l-5-5 1.41-1.41L11 14.67l7.09-7.09L19.5 8.91z"/></svg>
+                    </div>
+                    <h3 class="mt-4 text-xl font-semibold text-gray-700">Potenciar el Desempeño</h3>
+                    <p class="mt-2 text-gray-600 text-sm">Utilizar la IA como un co-piloto para optimizar el trabajo profesional.</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Modules Section -->
+        <section class="py-8 px-4">
+            <h2 class="text-3xl font-bold text-center mb-8 text-gray-800">Ejes del Programa</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <button class="module-button p-6 bg-blue-600 text-white rounded-2xl shadow-lg hover:bg-blue-700 focus:outline-none focus:ring focus:ring-blue-300 transition-all" onclick="showFullContent('modulo1')">
+                    <h3 class="text-2xl font-bold">Módulo 1</h3>
+                    <p class="mt-1 text-sm">Fundamentos y Gobernanza (25h)</p>
+                </button>
+                <button class="module-button p-6 bg-green-600 text-white rounded-2xl shadow-lg hover:bg-green-700 focus:outline-none focus:ring focus:ring-green-300 transition-all" onclick="showFullContent('modulo2')">
+                    <h3 class="text-2xl font-bold">Módulo 2</h3>
+                    <p class="mt-1 text-sm">Asistencia Clínica con IA (36h)</p>
+                </button>
+                <button class="module-button p-6 bg-yellow-600 text-white rounded-2xl shadow-lg hover:bg-yellow-700 focus:outline-none focus:ring focus:ring-yellow-300 transition-all" onclick="showFullContent('modulo3')">
+                    <h3 class="text-2xl font-bold">Módulo 3</h3>
+                    <p class="mt-1 text-sm">Docencia y Comunicación (15.5h)</p>
+                </button>
+                <button class="module-button p-6 bg-red-600 text-white rounded-2xl shadow-lg hover:bg-red-700 focus:outline-none focus:ring focus:ring-red-300 transition-all" onclick="showFullContent('modulo4')">
+                    <h3 class="text-2xl font-bold">Módulo 4</h3>
+                    <p class="mt-1 text-sm">Investigación Asistida por IA (18h)</p>
+                </button>
+                <button class="module-button p-6 bg-purple-600 text-white rounded-2xl shadow-lg hover:bg-purple-700 focus:outline-none focus:ring focus:ring-purple-300 transition-all" onclick="showFullContent('modulo5')">
+                    <h3 class="text-2xl font-bold">Módulo 5</h3>
+                    <p class="mt-1 text-sm">Habilidades Blandas y Liderazgo (15.5h)</p>
+                </button>
+                <button class="module-button p-6 bg-indigo-600 text-white rounded-2xl shadow-lg hover:bg-indigo-700 focus:outline-none focus:ring focus:ring-indigo-300 transition-all" onclick="showFullContent('modulo6')">
+                    <h3 class="text-2xl font-bold">Módulo 6</h3>
+                    <p class="mt-1 text-sm">Proyecto Final (5.5h)</p>
+                </button>
+            </div>
+        </section>
+
+        <!-- Charts Section -->
+        <section class="py-8 border-t-2 border-gray-200 mt-8 px-4">
+            <h2 class="text-3xl font-bold text-center mb-6 text-gray-800">Distribución de Carga Horaria</h2>
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-center">Carga por Módulo</h3>
+                    <canvas id="moduleChart"></canvas>
+                </div>
+                <div>
+                    <h3 class="text-2xl font-semibold mb-4 text-center">Carga por Docente Principal</h3>
+                    <canvas id="docenteChart"></canvas>
+                </div>
+            </div>
+        </section>
+        
+    </div>
+
+    <!-- Full Content Overlay -->
+    <div id="full-content-panel" class="info-panel">
+        <button class="close-button" onclick="closeFullContent()">Cerrar</button>
+        <div class="p-8 max-w-4xl mx-auto bg-white rounded-lg shadow-xl mt-16">
+            <div id="content-display"></div>
+        </div>
+    </div>
+
+    <script>
+        // Mapeo de IDs de botones a contenido completo, extrayendo los contenidos completos del documento de Word
+        const fullContent = {
+            'programa': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Resumen del Programa</h2>
+                <p>La Diplomatura en Medicina Asistida por Inteligencia Artificial propone una formación híbrida de 140 horas (100 horas de clases + 40 horas de trabajos prácticos), orientada a integrar la IA de manera ética y segura en la asistencia clínica, la docencia y la investigación clínica. El cursado es semanal, los jueves de 18:00 a 20:30, durante 40 semanas (febrero–diciembre 2026). Está dirigida a médicos en ejercicio y estudiantes avanzados de Medicina (5.º y 6.º), así como a otros profesionales de la salud interesados en aplicar IA en su práctica. El programa articula seis ejes: fundamentos, asistencia clínica, docencia en medicina, investigación, presentaciones y habilidades blandas, con una metodología de clases breves + talleres guiados para resolver problemas reales de la práctica. Al finalizar, las/os cursantes podrán diseñar casos de uso de IA en contextos clínicos, optimizar documentación, implementar checklists, aplicar segundas lecturas en imágenes, gestionar interacciones farmacológicas, mejorar la comunicación clínico-paciente y la docencia y realizar búsqueda y síntesis bibliográfica con criterios de calidad y seguridad. La evaluación incluye mini-desafíos prácticos y un proyecto final individual (informe + demo en vivo) con defensa, orientado a la aplicación real en servicios e instituciones.</p>
+            `,
+            'fundamentos': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Fundamentación Avanzada</h2>
+                <p>La aceleración reciente de los modelos generativos de gran escala (incluidos los modelos multimodales) está ampliando sus aplicaciones potenciales en salud —desde apoyo a la toma de decisiones y documentación, hasta educación del paciente y gestión de sistemas—, al tiempo que plantea nuevos riesgos clínicos, éticos y regulatorios. La OMS publicó en marzo de 2025 una guía específica para modelos multimodales en salud que enfatiza validación, mitigación de sesgos, transparencia, gobernanza y supervisión clínica continua, subrayando la necesidad de capacitación formal de los equipos de salud para un uso seguro y efectivo. Esta diplomatura responde de manera directa a esas recomendaciones.</p>
+                <p>El marco regulatorio internacional avanza hacia obligaciones concretas. El AI Act de la Unión Europea clasifica a muchos sistemas de IA en salud como de alto riesgo, con exigencias de gestión de riesgos, calidad de datos, documentación técnica, transparencia y vigilancia post comercialización. Además, en 2025 se reforzaron medidas para proveedores de IA de propósito general, consolidando prácticas de transparencia y seguridad que impactan también en el uso institucional de estas herramientas. La diplomatura alinea sus contenidos prácticos a estos criterios (gestión del ciclo de vida, auditoría y recalibración), preparando a los cursantes para escenarios regulatorios crecientes.</p>
+                <p>A nivel nacional, el programa se ajusta a las exigencias de confidencialidad y protección de datos que emanan de la Ley 25.326 y de los derechos del paciente (Ley 26.529), incluyendo el tratamiento de la historia clínica y el consentimiento informado. El entrenamiento enfatiza la minimización de datos, anonimización/pseudonimización, registro de prompts y verificación humana como salvaguardas esenciales cuando se emplean herramientas de IA en contextos clínicos y educativos.</p>
+                <p>Desde la perspectiva institucional, la diplomatura fortalece la misión académica y asistencial: forma equipos capaces de mejorar la calidad y seguridad del paciente mediante checklists y documentación asistida; reducir cargas administrativas; potenciar la docencia (diseño de clases y evaluaciones con IA manteniendo integridad académica); e impulsar la investigación clínica (búsqueda y síntesis bibliográfica, diseño de protocolos, análisis inicial) con estándares de ética y reproducibilidad. Este foco en competencias transferibles favorece la implementación de proyectos reales en servicios clínicos, residencias y líneas de investigación, con impacto directo en resultados y eficiencia. Así mismo establece el aprendizaje de habilidades blandas como la comunicación y la empatía técnica, como modelos de interacción obligada entre seres humanos que utilizan IA.</p>
+                <p>En síntesis, la diplomatura propone una formación rigurosa, aplicada y actualizada que combina fundamentos, práctica supervisada y liderazgo del cambio, para que las/los profesionales integren la IA de manera responsable, segura y efectiva en el ecosistema sanitario y académico.</p>
+            `,
+            'objetivos': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Objetivos de la Maestría</h2>
+                <ul class="list-disc list-inside space-y-2 mt-4">
+                    <li><b>Integrar la IA en salud de forma ética, segura y centrada en la persona.</b> Promover el uso responsable de la IA —con gobernanza de datos, privacidad, equidad y supervisión profesional— para mejorar calidad y seguridad sin reemplazar el juicio clínico.</li>
+                    <li><b>Potenciar el desempeño clínico, docente e investigador con IA como co-piloto.</b> Usar la IA para mejorar razonamiento clínico, documentación, checklists, educación y síntesis de evidencia, con trazabilidad y métricas de impacto que demuestren valor agregado real.</li>
+                    <li><b>Formar líderes del cambio en medicina digital.</b> Desarrollar capacidades para evaluar, implementar y escalar soluciones de IA en instituciones, comunicarlas con claridad a pacientes y comunidad, y sostener una cultura de mejora continua e innovación responsable.</li>
+                </ul>
+            `,
+            'modulo1': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 1: Fundamentos y Gobernanza de la IA en Salud (25 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Nuevos lineamientos de pensamiento integrativo con IA, en base a la evolución antropológica y filosófica de nuestra especie y de la tecnología médica.</li>
+                    <li>Comprender los fundamentos de la IA en salud. Explicar tipos de IA (ML, DL, LLMs), capacidades, límites y riesgos, y relacionarlos con el método clínico y los flujos asistenciales.</li>
+                    <li>Aplicar principios éticos y regulatorios. Integrar equidad, no maleficencia, transparencia y rendición de cuentas; cumplir con privacidad y protección de datos (historia clínica, consentimiento, minimización, anonimización/pseudonimización).</li>
+                    <li>Gestionar datos clínicos con calidad e interoperabilidad. Reconocer estándares (HL7/FHIR, SNOMED CT, LOINC), evaluar calidad de datos y preparar datasets clínicos seguros para usos docentes/asistenciales.</li>
+                    <li>Diseñar casos de uso de IA en el entorno clínico real. Definir problema, objetivo clínico, métricas de éxito, actores, riesgos y plan de mitigación; trazar un flujo de implementación factible.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 1:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 1: IA y Medicina — Generalidades (alcances, límites, mapa del curso)</li>
+                        <li>Clase 2: Antropología y Filosofía. Los nuevos modelos de pensamiento en la era de la IA.</li>
+                        <li>Clase 3: Grandes modelos de LLM- Modelos GPT en salud (configuración segura)</li>
+                        <li>Clase 4: Agentes GPT (orquestación de flujos)</li>
+                        <li>Clase 5: Ética de IA en salud (principios y casos)</li>
+                        <li>Clase 6: Privacidad y Gobernanza (Ley 25.326, 26.529, registros de prompts)</li>
+                        <li>Clase 7: Interoperabilidad y calidad de datos (HL7/FHIR, SNOMED, LOINC)</li>
+                        <li>Clase 8: Seguridad del paciente y validación (auditoría, recalibración)</li>
+                    </ul>
+                </div>
+            `,
+            'modulo2': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 2: Asistencia Clínica con IA (36 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Usar IA como apoyo al razonamiento clínico sin sustituir el juicio profesional. Estructurar anamnesis, diferenciales y planes, identificando cuándo no usar IA y cómo documentar la supervisión humana.</li>
+                    <li>Optimizar la documentación clínica asistida. Generar y auditar notas SOAP, epicrisis, interconsultas, consentimientos y justificativos de alto costo con trazabilidad, citación de fuentes y control de calidad.</li>
+                    <li>Implementar checklists clínico-quirúrgicos asistidos por IA. Diseñar, validar y medir adherencia/impacto en seguridad del paciente (pre-op, sepsis, anticoagulación, conciliación de medicación).</li>
+                    <li>Integrar IA en imágenes y otras modalidades diagnósticas. Usar la IA como segunda lectura (radiología, endoscopía, dermatología), interpretar incertidumbre, sesgo y calibración, y registrar decisiones.</li>
+                    <li>Gestionar farmacoterapia e interacciones con soporte de IA. Conciliar medicación, detectar interacciones y oportunidades de deprescripción, reduciendo fatiga por alertas y resguardando seguridad.</li>
+                    <li>Mejorar la comunicación clínico-paciente con IA. Cocrear materiales educativos claros, culturalmente pertinentes y accesibles; preparar conversaciones difíciles manteniendo empatía y autonomía del paciente.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 2:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 9: IA en la consulta (anamnesis, diferenciales, límites)</li>
+                        <li>Clase 10: IA en internación (evoluciones SOAP, epicrisis)</li>
+                        <li>Clase 11: IA en Telemedicina (protocolos, documentación)</li>
+                        <li>Clase 12: IA en Ateneos/M&M (soporte + resguardos)</li>
+                        <li>Clase 13: Pedidos de alto costo (justificación basada en guías)</li>
+                        <li>Clase 14: Checklists clínico-quirúrgicos (diseño y medición)</li>
+                        <li>Clase 15: IA en Imágenes (radiología como segunda lectura)</li>
+                        <li>Clase 16: IA en Gestión Sanitaria (scoring, reporte estructurado)</li>
+                        <li>Clase 17: Fármacos e interacciones (conciliación, deprescripción)</li>
+                        <li>Clase 18: Urgencias y triage (simulaciones guiadas)</li>
+                        <li>Clase 19: Crónicos y seguimiento (DM2, EPOC, EII)</li>
+                        <li>Clase 20: Integración y gobierno clínico (KPIs, incidentes, ROI)</li>
+                    </ul>
+                </div>
+            `,
+            'modulo3': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 3: Docencia y Comunicación Científica (15.5 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Diseñar e impartir clases asistidas por IA (pre y posgrado). Planificar clases, simulaciones y casos; usar IA para generar materiales y actividades sin perder integridad académica.</li>
+                    <li>Evaluar con IA de forma válida y justa. Construir rúbricas, bancos de preguntas y OSCE asistidos; promover metacognición y retroalimentación formativa responsable.</li>
+                    <li>Acompañar a estudiantes en el uso responsable de IA. Enseñar estrategias para estudiar, autoevaluarse y pedir ayuda a la IA, documentando el proceso y evitando dependencia.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 3:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 21: Taller — IA en Docencia I (planificación de clases y casos)</li>
+                        <li>Clase 22: Taller — IA en Docencia II (evaluación, rúbricas, OSCE)</li>
+                        <li>Clase 23: Asistente para estudiantes (estudio, metacognición, integridad)</li>
+                        <li>Clase 24: Posgrado y educación continua (ateneos, micro-learning)</li>
+                        <li>Clase 25: Taller docente — Diseño + instrumento de evaluación</li>
+                    </ul>
+                </div>
+            `,
+            'modulo4': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 4: Investigación Asistida por IA (18 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Formular preguntas de investigación y diseñar protocolos con apoyo de IA. Redactar PICO, elegir diseños, armar CRFs y bosquejos de análisis, identificando sesgos y límites del soporte automatizado.</li>
+                    <li>Realizar búsqueda y síntesis bibliográfica asistida. Usar descriptores/MeSH, gestores y herramientas de cribado; producir resúmenes estructurados y matrices de evidencia con evaluación crítica del sesgo.</li>
+                    <li>Análisis de datos clínicos con lenguaje de programación (Python) o plataformas low-code para la preparación de datasets y visualización.</li>
+                    <li>Comunicar ciencia y clínico con alto estándar visual. Crear presentaciones, posters y “pitches” con storytelling y visualización clara, usando IA como soporte creativo y manteniendo veracidad.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 4:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 26: IA en Metodología (pregunta clínica, diseño, sesgos)</li>
+                        <li>Clase 27: IA en Bioestadística (análisis básico con/ sin código)</li>
+                        <li>Clase 28: Diseño de protocolos (criterios, CRF, plan de análisis)</li>
+                        <li>Clase 29: IA en Búsquedas (PubMed/MeSH, gestores, screening, Elicit, Open Evidence)</li>
+                        <li>Clase 30: Síntesis de evidencia (PRISMA/CONSORT, riesgo de sesgo)</li>
+                        <li>Clase 31: Taller de protocolo (entregable con feedback)</li>
+                    </ul>
+                </div>
+            `,
+            'modulo5': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 5: Habilidades Blandas y Liderazgo (15.5 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Gestionar el cambio y el trabajo humano-IA en equipo. Mapear actores, negociar con áreas clínicas/IT/legales, definir roles y rituales de trabajo que integren IA sin fricción.</li>
+                    <li>Comunicación clínica compleja y educación del paciente. Preparar conversaciones difíciles con pacientes utilizando IA para simular escenarios, manteniendo la empatía y la autonomía.</li>
+                    <li>Desarrollar marca y comunicación profesional ética (on/offline). Planificar presencia en redes, marketing personal y manejo de crisis, comunicando ciencia a público general sin sensacionalismo.</li>
+                    <li>Gestionar proyectos: Definición de KPIs (indicadores clave de rendimiento), auditoría y vigilancia post-despliegue para garantizar el valor real de la IA en la práctica.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 5:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 35: Competencias del médico 3.0 (trabajo humano-IA)</li>
+                        <li>Clase 36: Comunicación clínica compleja y educación del paciente</li>
+                        <li>Clase 37: Comunicación pública y redes (reputación, ética)</li>
+                        <li>Clase 38: Marca profesional y presencia digital (plan personal)</li>
+                        <li>Clase 39: Gestión del cambio y negociación institucional</li>
+                    </ul>
+                </div>
+            `,
+            'modulo6': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-4">Módulo 6: Proyecto Final Aplicable (TFI) (5.5 horas)</h2>
+                <p><b>Contenidos:</b></p>
+                <ul class="list-disc list-inside space-y-2">
+                    <li>Elaboración y defensa del proyecto: Desarrollo de un proyecto final individual, con el objetivo de presentar un prototipo o un plan de implementación real. El proyecto debe incluir un análisis de riesgo y un plan de monitoreo.</li>
+                </ul>
+                <div class="mt-8">
+                    <h4 class="text-xl font-bold text-gray-800 mb-2">Clases del Módulo 6:</h4>
+                    <ul class="list-disc list-inside">
+                        <li>Clase 40: Presentación Final (defensas TFI y cierre)</li>
+                    </ul>
+                </div>
+            `,
+            'carga-horaria': `
+                <h2 class="text-3xl font-bold text-gray-800 mb-6">Carga Horaria por Docente y Módulo</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div>
+                        <h3 class="text-2xl font-semibold text-center mb-4">Distribución por Docente</h3>
+                        <canvas id="docenteChartModal"></canvas>
+                    </div>
+                    <div>
+                        <h3 class="text-2xl font-semibold text-center mb-4">Distribución por Módulo</h3>
+                        <canvas id="moduloChartModal"></canvas>
+                    </div>
+                </div>
+                <div class="mt-8">
+                    <h4 class="text-2xl font-bold text-gray-800 mb-4">Carga Horaria Detallada</h4>
+                    <p class="text-gray-700"><b>100 horas clase</b></p>
+                    <ul class="list-disc list-inside space-y-1 mt-2">
+                        <li>Modulo 1: Dr. Abel Novillo, 20 horas</li>
+                        <li>Modulo 2: Dr. Abel Novillo, 20 horas, Dr. Patricio Celari; 7,5 hs; Dra. Gabriela Salomón 5 hs.</li>
+                        <li>Modulo 3: Dr. Daniel Olea, 12,5 horas</li>
+                        <li>Modulo 4: Dra. Andrea Diaz, 15 horas</li>
+                        <li>Modulo 5: Dr. Abel Novillo, 7,5 horas</li>
+                        <li>Modulo 6: Psi Pamela Araoz 12,5 horas; Dr. Abel Novillo 2,5 horas.</li>
+                    </ul>
+                    <br>
+                    <p class="text-gray-700"><b>40 horas trabajos prácticos</b></p>
+                    <ul class="list-disc list-inside space-y-1 mt-2">
+                        <li>Modulo 1: Dr. Abel Novillo, 5 horas</li>
+                        <li>Modulo 2: Dr. Abel Novillo, 6 horas</li>
+                        <li>Modulo 3: Dr. Daniel Olea, 3 horas</li>
+                        <li>Modulo 4: Dra. Andrea Diaz, 3 horas</li>
+                        <li>Modulo 5: Dr. Abel Novillo, 2 horas</li>
+                        <li>Modulo 6: Psi Pamela Araoz 3 horas; Dr. Abel Novillo 3 horas</li>
+                    </ul>
+                    <br>
+                    <p class="text-gray-700"><b>Total Final</b></p>
+                    <ul class="list-disc list-inside space-y-1 mt-2">
+                        <li>Modulo 1: Dr. Abel Novillo, 25 horas</li>
+                        <li>Modulo 2: Dr. Abel Novillo, 36 horas</li>
+                        <li>Modulo 3: Dr. Daniel Olea, 15,5 horas</li>
+                        <li>Modulo 4: Dra. Andrea Diaz, 18 horas</li>
+                        <li>Modulo 5: Dr. Abel Novillo, 9,5 horas</li>
+                        <li>Modulo 6: Psi Pamela Araoz 15,5 horas; Dr. Abel Novillo 5,5 horas</li>
+                    </ul>
+                </div>
+            `
+        };
+
+        // JS logic to show the full content
+        function showFullContent(contentId) {
+            const contentDisplay = document.getElementById('content-display');
+            contentDisplay.innerHTML = fullContent[contentId];
+            document.getElementById('full-content-panel').classList.add('visible');
+            document.body.style.overflow = 'hidden'; // Evitar scroll del fondo
+
+            if (contentId === 'carga-horaria') {
+                setTimeout(() => {
+                    renderCharts('docenteChartModal', 'moduloChartModal');
+                }, 100);
+            }
+        }
+
+        function closeFullContent() {
+            document.getElementById('full-content-panel').classList.remove('visible');
+            document.body.style.overflow = 'auto'; // Permitir scroll del fondo
+        }
+
+        function toggleMenu() {
+            document.getElementById('menu-panel').classList.toggle('open');
+        }
+
+        function showSection(sectionId) {
+            showFullContent(sectionId);
+            toggleMenu();
+        }
+
+        function renderCharts(docenteCanvasId, moduloCanvasId) {
+            const docenteData = {
+                labels: ['Dr. Novillo', 'Dra. Díaz', 'Dra. Salomón', 'Dr. Celario', 'Dr. Olea', 'Psi. Araoz'],
+                datasets: [{
+                    label: 'Carga Horaria por Docente',
+                    data: [76, 18, 5, 7.5, 15.5, 15.5],
+                    backgroundColor: ['#005c8c', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6366F1'],
+                    hoverBackgroundColor: ['#004566', '#0E9F6E', '#D97706', '#B91C1C', '#6D28D9', '#4F46E5'],
+                    borderColor: '#fff',
+                    borderWidth: 1,
+                }]
+            };
+
+            const moduloData = {
+                labels: ['Módulo 1', 'Módulo 2', 'Módulo 3', 'Módulo 4', 'Módulo 5', 'Módulo 6'],
+                datasets: [{
+                    label: 'Carga Horaria por Módulo',
+                    data: [25, 36, 15.5, 18, 15.5, 5.5],
+                    backgroundColor: ['#005c8c', '#10B981', '#F59E0B', '#EF4444', '#8B5CF6', '#6366F1'],
+                    hoverBackgroundColor: ['#004566', '#0E9F6E', '#D97706', '#B91C1C', '#6D28D9', '#4F46E5'],
+                    borderColor: '#fff',
+                    borderWidth: 1,
+                }]
+            };
+
+            const docenteCtx = document.getElementById(docenteCanvasId)?.getContext('2d');
+            const moduloCtx = document.getElementById(moduloCanvasId)?.getContext('2d');
+            
+            if (docenteCtx) {
+                new Chart(docenteCtx, {
+                    type: 'pie',
+                    data: docenteData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false,
+                            }
+                        }
+                    }
+                });
+            }
+
+            if (moduloCtx) {
+                 new Chart(moduloCtx, {
+                    type: 'pie',
+                    data: moduloData,
+                    options: {
+                        responsive: true,
+                        plugins: {
+                            legend: {
+                                position: 'top',
+                            },
+                            title: {
+                                display: false,
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            renderCharts('docenteChart', 'moduleChart');
+        });
+    </script>
+</body>
+</html>
